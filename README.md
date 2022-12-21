@@ -1,7 +1,7 @@
 <div align="center">
-<h2>
+<h3>
   Yolox-Pip: This is a packaged version of the YOLOX for easy installation and use.
-</h2>
+</h3>
 <h4>
     <img width="800" alt="teaser" src="doc/fig.png">
 </h4>
