@@ -1,0 +1,4 @@
+opencv_python
+torch
+huggingface_hub
+yolox==0.3.0
