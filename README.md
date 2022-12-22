@@ -20,9 +20,10 @@ pip install yoloxdetect
 from yoloxdetect import YoloxDetector
 
 model = YoloxDetector(
-    model_path = "data/weights/yolox_s.pth",
+    model_path = "data/weights/yolox_s.pth", # or "kadirnar/yolox_s-v0.1.1"
     config_path = "configs.yolox_s",
     device = "cuda:0",
+    hf_model=True,
 )
 model.classes = None
 model.conf = 0.25

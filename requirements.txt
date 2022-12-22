@@ -1,4 +1,4 @@
 opencv_python
-torch
 huggingface_hub
+torch
 yolox==0.3.0

@@ -2,7 +2,6 @@ from yoloxdetect.utils.downloads import attempt_download_from_hub
 from yolox.data.datasets import COCO_CLASSES
 from yolox.data.data_augment import preproc
 from yolox.utils import postprocess, vis
-from typing import List
 import importlib
 import torch
 import cv2
@@ -15,10 +14,10 @@ class YoloxDetector:
         model_path: str,
         config_path: str,
         device: str = "cpu",
+        hf_model: bool = False,
     ):
 
         self.device = device
-        self.model_path = attempt_download_from_hub(model_path)
         self.config_path = config_path
         self.classes = COCO_CLASSES
         self.conf = 0.3
@@ -28,6 +27,12 @@ class YoloxDetector:
         
         if self.save:
             self.save_path = 'output/result.jpg'
+            
+        if hf_model:
+            self.model_path = attempt_download_from_hub(model_path)
+        
+        else:
+            self.model_path = model_path
         
     
         self.load_model()
@@ -45,8 +50,8 @@ class YoloxDetector:
         self.model = model
 
 
-    def predict(self, image, image_size):    
-        image = cv2.imread(image)    
+    def predict(self, image_path, image_size):    
+        image = cv2.imread(image_path)    
         if image_size is not None:
             ratio = min(image_size / image.shape[0], image_size / image.shape[1])
             img, _ = preproc(image, input_size=(image_size, image_size))
@@ -98,6 +103,7 @@ if __name__ == "__main__":
         model_path = "kadirnar/yolox_s-v0.1.1",
         config_path = "configs.yolox_s",
         device = "cuda:0",
+        hf_model=True,
     )
 
     image = "data/images/dog.jpg"
