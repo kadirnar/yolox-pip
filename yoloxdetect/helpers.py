@@ -1,4 +1,4 @@
-from yoloxdetect.utils.downloads import attempt_download_from_hub
+from yoloxdetect.utils.downloads import attempt_download_from_hub, attempt_download
 from yolox.data.datasets import COCO_CLASSES
 from yolox.data.data_augment import preproc
 from yolox.utils import postprocess, vis
@@ -33,8 +33,7 @@ class YoloxDetector:
             self.model_path = attempt_download_from_hub(model_path)
         
         else:
-            self.model_path = model_path
-        
+            self.model_path = attempt_download(model_path)        
     
         self.load_model()
 
@@ -75,7 +74,6 @@ class YoloxDetector:
         bboxes /= ratio
         cls = output[:, 6]
         scores = output[:, 4] * output[:, 5]
-        object_predictions_list = [bboxes, scores, cls, COCO_CLASSES]
         if self.torchyolo is False:
             vis_res = vis(
                 image,
@@ -99,16 +97,17 @@ class YoloxDetector:
             else:
                 return vis_res
         else:
+            object_predictions_list = [bboxes, scores, cls, COCO_CLASSES]
             return object_predictions_list
 
 
 if __name__ == "__main__":
     model = YoloxDetector(
-        model_path = "kadirnar/yolox_s-v0.1.1",
-        config_path = "configs.yolox_s",
+        model_path = "yolox_l.pth",
+        config_path = "configs.yolox_l",
         device = "cuda:0",
-        hf_model=True,
-    )
+        hf_model=False,
+        )
 
     image = "data/images/dog.jpg"
     
