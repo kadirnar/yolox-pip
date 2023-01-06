@@ -1,3 +1,3 @@
-from yoloxdetect.demo import YoloxDetector
+from yoloxdetect.helpers import YoloxDetector
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"

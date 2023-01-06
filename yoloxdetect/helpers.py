@@ -24,6 +24,7 @@ class YoloxDetector:
         self.iou = 0.45
         self.show = False  
         self.save = True
+        self.torchyolo = False
         
         if self.save:
             self.save_path = 'output/result.jpg'
@@ -74,28 +75,31 @@ class YoloxDetector:
         bboxes /= ratio
         cls = output[:, 6]
         scores = output[:, 4] * output[:, 5]
-
-        vis_res = vis(
-            image,
-            bboxes,
-            scores,
-            cls,
-            self.conf,
-            COCO_CLASSES,
-        )
-        if self.show:
-            cv2.imshow("result", vis_res)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-        elif self.save:
-            save_dir = self.save_path[:self.save_path.rfind('/')]
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
-            cv2.imwrite(self.save_path, vis_res)
-            return self.save_path
-        
+        object_predictions_list = [bboxes, scores, cls, COCO_CLASSES]
+        if self.torchyolo is False:
+            vis_res = vis(
+                image,
+                bboxes,
+                scores,
+                cls,
+                self.conf,
+                COCO_CLASSES,
+            )
+            if self.show:
+                cv2.imshow("result", vis_res)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+            elif self.save:
+                save_dir = self.save_path[:self.save_path.rfind('/')]
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
+                cv2.imwrite(self.save_path, vis_res)
+                return self.save_path
+            
+            else:
+                return vis_res
         else:
-            return vis_res
+            return object_predictions_list
 
 
 if __name__ == "__main__":
