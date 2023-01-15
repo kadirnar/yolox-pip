@@ -41,8 +41,8 @@ def safe_download(file, url, url2=None, min_bytes=1E0, error_msg=''):
             raise Exception(error_msg or assert_msg)  # raise informative error
 
 def attempt_download(file, repo='Megvii-BaseDetection/YOLOX', release='0.1.0'):
-    def github_assets(repository, version='tags/latest'):
-        response = requests.get(f'https://api.github.com/repos/{repository}/releases/{version}').json()  # github api
+    def github_assets(repository, version='latest'):
+        response = requests.get(f'https://api.github.com/repos/{repository}/releases/tags/{version}').json()  # github api
         return response['tag_name'], [x['name'] for x in response['assets']]  # tag, assets
 
     file = Path(str(file).strip().replace("'", ''))
@@ -60,7 +60,8 @@ def attempt_download(file, repo='Megvii-BaseDetection/YOLOX', release='0.1.0'):
 
         # GitHub assets
         assets = [
-            'yolox_x.pth', 'yolox_l.pth', 'yolox_m.pth', 'yolox_s.pth', 'yolox_tiny.pth', 'yolox_nano.pth']
+            'yolov6n.pt', 'yolov6s.pt', 'yolov6m.pt', 'yolov6l.pt',
+            'yolov6n6.pt', 'yolov6s6.pt', 'yolov6m6.pt', 'yolov6l6.pt']
         try:
             tag, assets = github_assets(repo, release)
         except Exception:
@@ -74,12 +75,11 @@ def attempt_download(file, repo='Megvii-BaseDetection/YOLOX', release='0.1.0'):
 
         file.parent.mkdir(parents=True, exist_ok=True)  # make parent dir (if required)
         if name in assets:
-            url3 = 'https://drive.google.com/drive/folders/1EFQTEUeXWSFww0luse2jB9M1QNZQGwNl'  # backup gdrive mirror
             safe_download(
                 file,
                 url=f'https://github.com/{repo}/releases/download/{tag}/{name}',
                 url2=f'https://storage.googleapis.com/{repo}/{tag}/{name}',  # backup url (optional)
                 min_bytes=1E5,
-                error_msg=f'{file} missing, try downloading from https://github.com/{repo}/releases/{tag} or {url3}')
+                error_msg=f'{file} missing, try downloading from https://github.com/{repo}/releases/{tag}')
     
     return str(file)
